@@ -11,7 +11,68 @@
 		// Want a harder challenge? Also show a list with previously carried
 		// out operations and what the result was. Clicking on one of them,
 		// auto fills the form with that operation.
-		
+		let previousEquations = []
+
+		document.addEventListener("DOMContentLoaded", () => {
+
+			let previousEquationList = document.createElement("ol")
+			document.body.appendChild(previousEquationList)
+
+			document.getElementById("calculatorForm").addEventListener("submit", (event) => {
+				event.preventDefault()
+
+				let equation = {
+					operand1: Number.parseInt(document.getElementById("operand1").value),
+					operand2: Number.parseInt(document.getElementById("operand2").value),
+					operation: document.getElementById("operation").value,
+					result: undefined,
+
+					toString() {
+						let outputString = this.operand1
+						outputString += {add: " + ", sub: " - ", mul: " * ", div: " / "}[this.operation]
+						outputString += this.operand2
+						outputString += " = "
+						outputString += this.result
+						return outputString
+					}
+				}
+
+				switch (equation.operation) {
+					case "add":
+						equation.result = equation.operand1 + equation.operand2
+						break
+					case "sub":
+						equation.result = equation.operand1 - equation.operand2
+						break
+					case "mul":
+						equation.result = equation.operand1 * equation.operand2
+						break
+					case "div":
+						equation.result = equation.operand1 / equation.operand2
+						break
+				}
+
+				document.getElementById("result").innerText = equation.result
+
+				let listItem = document.createElement("li")
+				let historyButton = document.createElement("button")
+				historyButton.innerText = equation.toString()
+				listItem.appendChild(historyButton)
+				historyButton.value = previousEquations.length
+				historyButton.onclick = bringBackHistoryEquation
+				previousEquations.push(equation)
+				previousEquationList.appendChild(listItem)
+			})
+		})
+
+		function bringBackHistoryEquation(event) {
+			let equation = previousEquations[event.srcElement.value]
+			document.getElementById("operation").value = equation.operation
+			document.getElementById("operand1").value = equation.operand1
+			document.getElementById("operand2").value = equation.operand2
+			document.getElementById("result").innerText = equation.result
+		}
+
 	</script>
 </head>
 <body>
